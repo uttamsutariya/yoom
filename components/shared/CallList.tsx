@@ -3,10 +3,11 @@
 import { useGetCalls } from "@/hooks/useGetCalls";
 import { CallRecording, Call } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import _ from "lodash";
 import MeetingCard from "./MeetingCard";
 import Loader from "./Loader";
+import { toast } from "../ui/use-toast";
 
 interface CallListProps {
     type: "ended" | "upcoming" | "recordings";
@@ -14,9 +15,6 @@ interface CallListProps {
 
 const CallList = ({ type }: CallListProps) => {
     const { callRecordings, endedCalls, upcomingCalls, isLoading } = useGetCalls();
-
-    console.log("upcomingCalls", upcomingCalls);
-    console.log("endedCalls", endedCalls);
 
     const router = useRouter();
     const [recordings, setRecordings] = useState<CallRecording[]>([]);
@@ -52,6 +50,22 @@ const CallList = ({ type }: CallListProps) => {
                 return "";
         }
     };
+
+    useEffect(() => {
+        const fetchRecordings = async () => {
+            try {
+                const callData = await Promise.all(callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []);
+                const recordings = callData.filter((call) => call.recordings.length > 0).flatMap((call) => call.recordings);
+                setRecordings(recordings);
+            } catch (error) {
+                toast({ title: "Try again later" });
+            }
+        };
+
+        if (type === "recordings") {
+            fetchRecordings();
+        }
+    }, [type, callRecordings]);
 
     const calls = getCalls();
     const noCallsMessage = getNoCallsMessage();
