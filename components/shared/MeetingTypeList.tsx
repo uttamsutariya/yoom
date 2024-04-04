@@ -9,6 +9,7 @@ import { Textarea } from "../ui/textarea";
 import HomeCard from "./HomeCard";
 import MeetingModal from "./MeetingModal";
 import ReactDatePicker from "react-datepicker";
+import { Input } from "../ui/input";
 
 const MeetingTypeList = () => {
     const router = useRouter();
@@ -152,6 +153,25 @@ const MeetingTypeList = () => {
                 handleClick={createMeeting}
                 loading={loading}
             />
+
+            <MeetingModal
+                isOpen={meetingState === "isJoiningMeeting"}
+                onClose={() => setMeetingState(undefined)}
+                title="Paste the meeting link here"
+                loadingTitle="Joining the meeting..."
+                className="text-center"
+                buttonText="Join meeting"
+                handleClick={() => {
+                    router.push(values.link);
+                }}
+                loading={loading}
+            >
+                <Input
+                    placeholder="Meeting Link"
+                    className="border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    onChange={(e) => setValues({ ...values, link: e.target.value })}
+                />
+            </MeetingModal>
         </section>
     );
 };
