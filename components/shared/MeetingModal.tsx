@@ -8,14 +8,14 @@ interface MeetingModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    loadingTitle: string;
+    loadingTitle?: string;
     className?: string;
     children?: ReactNode;
     handleClick?: () => void;
     buttonText?: string;
     image?: string;
     buttonIcon?: string;
-    loading: boolean;
+    loading?: boolean;
 }
 
 const MeetingModal = ({ isOpen, onClose, title, loadingTitle, buttonIcon, buttonText, children, className, handleClick, image, loading }: MeetingModalProps) => {
